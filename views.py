@@ -1,6 +1,6 @@
 from flask import Blueprint, request, redirect, render_template, url_for
 from flask.views import MethodView
-from greylocku.models import *
+from models import *
 from flask.ext.mongoengine.wtf import model_form
 import json
 
