@@ -9,7 +9,7 @@ db = MongoEngine(app)
 
 def register_blueprints(app):
     # Prevents circular imports
-    from greylocku.views import users
+    from views import users
     app.register_blueprint(users)
 
 register_blueprints(app)
