@@ -2,10 +2,10 @@ from flask import Flask, render_template
 from flask.ext.mongoengine import MongoEngine
 
 app = Flask(__name__)
-app.config["MONGODB_DB"] = "greylocku"
-app.config["SECRET_KEY"] = "KeepThisS3cr3t"
+#app.config["MONGODB_DB"] = "greylocku"
+#app.config["SECRET_KEY"] = "KeepThisS3cr3t"
 
-db = MongoEngine(app)
+#db = MongoEngine(app)
 
 def register_blueprints(app):
     # Prevents circular imports
