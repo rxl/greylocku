@@ -82,7 +82,3 @@ users.add_url_rule('/logout', view_func=LogoutView.as_view('logout'))
 users.add_url_rule('/facebook-authorized', view_func=FacebookAuthorizedView.as_view('facebook-authorized'))
 
 
-
-
-
-
