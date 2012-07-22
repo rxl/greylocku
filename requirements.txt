@@ -12,4 +12,5 @@ httplib2==0.7.4
 mongoengine==0.6.16
 oauth2==1.5.211
 pymongo==2.2.1
+requests==0.13.3
 wsgiref==0.1.2

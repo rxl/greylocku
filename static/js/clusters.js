@@ -66,22 +66,6 @@ function onClustersReceive(data) {
 
 function graphMuseError(jqXHR, exception) {
             clearLoadingStatus();
-
-            if (jqXHR.status === 0) {
-                document.getElementById("loading").innerHTML = 'Not connected. Verify network.';
-            } else if (jqXHR.status == 404) {
-                document.getElementById("loading").innerHTML = 'Requested page not found. [404]';
-            } else if (jqXHR.status == 500) {
-                document.getElementById("loading").innerHTML = 'Internal Server Error [500].';
-            } else if (exception === 'parsererror') {
-                document.getElementById("loading").innerHTML = 'Requested JSON parse failed.';
-            } else if (exception === 'timeout') {
-                document.getElementById("loading").innerHTML = 'Time out error.';
-            } else if (exception === 'abort') {
-                document.getElementById("loading").innerHTML = 'Ajax request aborted.';
-            } else {
-                document.getElementById("loading").innerHTML = 'Uncaught Error. ' + jqXHR.responseText;
-            }
 }
 
 function setLoadingStatus() {
@@ -100,7 +84,7 @@ function loadClusters() {
     } else {
         setLoadingStatus();
         $.ajax({
-            'url' : 'http://api.graphmuse.com:8081/clusters?auth=AAACEdEose0cBAJHw26K9QhZBfOpLE0HKCDbIzfUKklgByZCfX9O6WStV7LK4cJzLBa1AoxNAanBigOua4c6pesOeuPLtKPhooPxVSByAcWHEoGUxI2&beta=0.75',
+            'url' : 'http://api.graphmuse.com:8081/clusters?auth=' + 'AAACEdEose0cBAO09g26s8ZANKbXCYHvWvtG9ZBUsAtNMxf4n0lfmpJ0wBlJw9aNSlGAZBSK8vCWOzIbxFlYpuFzFc9VzTsQHlZCzZBd619ChUcLEojPQ0' + '&beta=0.75',
             'dataType' : 'JSON',
             'success' : onClustersReceive,
             'error' : graphMuseError
