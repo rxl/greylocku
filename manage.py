@@ -11,6 +11,7 @@ manager = Manager(app)
 manager.add_command("runserver", Server(
     use_debugger = True,
     use_reloader = True,
+    port = int(os.environ.get('PORT', 5000)),
     host = '0.0.0.0')
 )
 
