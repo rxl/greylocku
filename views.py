@@ -156,19 +156,25 @@ class GenerateFriendListView(MethodView):
 	def post(self):
 		response = { "success" : False }
 		data = None
-
 		try:
-			data = request.data
+			data = request.form
+			print data
 			try:
-				friendlist_name = data['name']
+				friendlist_name = data.getlist('name')[0]
+				print friendlist_name
+				friendlist_name = str(friendlist_name).replace(' ', '%20')
+				print friendlist_name
 				resp = facebook.post('/friendlists?name=' + friendlist_name)
+				print friendlist_name
+				print resp.data
 				try:
 					friendlist_id = resp.data['id']
 					try:
-						members = data['members']
+						members = json.loads(data.getlist('members')[0])
+						print members
 						for member in members:
-							user_id = member['i']
-							resp = facebook.post(friendlist_id + "/members/" + user_id)
+						        print member
+							resp = facebook.post(friendlist_id + "/members/" + member['i'])
 						response = { "success" : True, "friendlist_id": friendlist_id }
 					except:
 						response = { "success" : False, "error" : "members of friendlist not found" }
@@ -179,7 +185,8 @@ class GenerateFriendListView(MethodView):
 		except:
 			response = { "success" : False, "error" : "could not load request data" }
 
-		return response
+                print response
+		return json.dumps(response)
 
 class GetClustersView(MethodView):
 	def get(self, access_token):

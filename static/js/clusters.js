@@ -26,7 +26,7 @@ function viewCluster(e) {
     $("#viewcluster-modal").modal({keyboard : false, backdrop : 'static', show: true});
 }
 
-function showClusters(clusters) {
+function showClustersOld(clusters) {
     var cluster_template = '<div class="cluster"><div class="cluster-info"><div class="cluster-title title"><span class="cluster-bullet">&bull;</span><span class="cluster-bullet">&bull;</span><span class="cluster-bullet">&bull;</span>Cluster ${i}<span class="cluster-bullet">&bull;</span><span class="cluster-bullet">&bull;</span><span class="cluster-bullet">&bull;</span></div></div><ul class="list-of-friends" id="cluster_${i}"></ul></div>'
     + '<p class="button"><a class="btn btn-large" id="viewcluster-button-${i}">Expand Cluster</a></p>';
 
@@ -100,7 +100,7 @@ function loadClusters() {
     } else {
         setLoadingStatus();
         $.ajax({
-            'url' : 'http://api.graphmuse.com:8081/clusters?auth=AAAB01zpxDDcBAGZAl5GXrPqqepF0ZAdzs7CysuZAkj6pK2LH96vh8MLnUT0CVrGq2hI8IfXUIYwcrxGG0zzEu0ez2O4z6GbtWEfq08CQAZDZD&beta=0.75',
+            'url' : 'http://api.graphmuse.com:8081/clusters?auth=AAACEdEose0cBAJHw26K9QhZBfOpLE0HKCDbIzfUKklgByZCfX9O6WStV7LK4cJzLBa1AoxNAanBigOua4c6pesOeuPLtKPhooPxVSByAcWHEoGUxI2&beta=0.75',
             'dataType' : 'JSON',
             'success' : onClustersReceive,
             'error' : graphMuseError
@@ -124,17 +124,36 @@ function createFriendList() {
         'type' : 'POST',
         'url' : '/generatefriendlist/',
 	'dataType' : 'JSON',
-	'data' : data,
+	'data' : {
+	    'name' : name,
+	    'members' : JSON.stringify(clusters[id].members)
+	},
 	'success' : onCreatedFriendList,
 	'error' : createFriendListError
     });
 }
 
 function onCreatedFriendList(data) {
+    list_id = data['friendlist_id'];
+    window.open('https://www.facebook.com/lists/' + list_id);
 }
 
 function createFriendListError(jqXHR, exception) {
     displayError("Could not create friend list");
+}
+
+function createFriendListNew(name, members) {
+    $.ajax({
+        'type' : 'POST',
+        'url' : '/generatefriendlist/',
+        'dataType' : 'JSON',
+        'data' : {
+            'name' : name,
+            'members' : JSON.stringify(members)
+        },
+        'success' : onCreatedFriendList,
+        'error' : createFriendListError
+    });
 }
 
 /**

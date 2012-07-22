@@ -1,47 +1,162 @@
 {% extends "base.html" %}
 
 {% block content %}
-	{% if not session.logged_in %}
-		<p>You're not logged in!</p>
-	{% else %}
-		<p>You're logged in!</p>
-	{% endif %}
 
-<div class="alert alert-info notification" id="loading-message" style="display:none"> 
-    <img src="/static/img/ajax-loader.gif"></img>&nbsp; &nbsp; <span class="message">Loading Clusters...</span>
-</div>
+  <div class=header>FRIENDMUSE</div>
+  <div class=stripe1></div>
+  <div class=stripe2></div>
+  
+  <div class="stripe3"></div>
 
-<div id="clusterDiv">
-</div>
+  <div id="Loading">Loading...</div>
+    <div id="container" class="super-list variable-sizes clearfix" syle='vertical-align: top;'>
+    <script>
+    var cluster_names = [];
+    var $container = $('#container');
+    classes = ["alkali","aearth", 
+"lantha",
+"actino"   , 
+"transi"  ,   
+"posttr",
+"metall",
+"othern", 
+"haloge",
+"nobleg"];
+colors = ["#92B909",
+"#1AB3D0",
+"#F6BB21",
+"#F47B2A",
+"#0090B4"]
 
-<p class="button"><a class="btn btn-large" id="viewcluster-button">Expand Cluster</a></p>
 
-<div class="modal fade" id="viewcluster-modal">
-    <div class="modal-header">
-	<button class="close" data-dismiss="modal">×</button>
-	<h3 id="viewcluster-title">Cluster</h3>
-    </div>
-    <div class="modal-body">
-        <p align="center"><strong>Cluster Name: </strong><input type="text" id="cluster-name" /></p>
-	<p class="button" align="center"><a class="btn btn-large" id="friendlist-button">Create Friend List</a> </p>
-	<p align="center" id="cluster-interests"></p>
-	<br /><br />
-	<div id="friend-list">
-            <p><ul class="list-of-friends" id="list-of-friends"></ul></p>
-	</div>
-    </div>
-</div>
+    	function showClusters(clusters){
+    		var counter = 0;
+    		for (var c in clusters)
+    		{ 
+    			var items = [];
+    			//var width = (Math.round(Math.random() * 2) + 4) * 90;
+    			//if (counter == 0)
+    			var width = 450;
+    			$("#container").append($('<div id="ocontainer' + counter + '" class=outerwrap><div id="container' + counter + '" class="fadecont super-list variable-sizes clearfix new" style="width: '+ width +'px; vertical-align: top;"></div></div>'));
+    			var $container = $('#container' + counter);
+    			
+            	$container.isotope({ itemSelector : '.element',
+        			masonry: {}
+   					   });
+    			peoplecount = 0
+    			for (var person in clusters[c]["members"])
+    			{ 
+    				var string = '<div class="element '+ classes[counter % 5] +' metal   " data-symbol="Mg" data-category="alkaline-earth" style="width: 80px;">'
+					string += '<img src="http://graph.facebook.com/' + clusters[c]["members"][person]["i"] + '/picture">'
+      				string += '<h2 class="name">' + clusters[c]["members"][person]["name"] + '</h2>'
+     				string += '</div>'
+     				items.push(string);	
+    				peoplecount++
+    				if (peoplecount > 30) break;
+    			}
+    			var string = '<div class="input" style="display: none;"><input style="color: ' + colors[counter % 5]+';" value="Edit Label"><h4>Create Facebook List</h4><br><h3>Hide</h3></div>'
+				$('#ocontainer' + counter).append(string);
+    			var $items = $( items.join('') );
+    			   // set random number for each item
+          		$items.each(function(){
+            		$(this).attr('data-number', ~~( Math.random() * 100 + 15 ));
+          		});
+        
+          		//$items.imagesLoaded(function(){
+         			$container.append( $items );
+            		$items.each(function(){
+              			margin = 0 - Math.round(Math.random() * 5)
+              			margin = 2;
+              			hmargin = -10;
+              			$(this).css("height", $(this).height() + 0).css('width',80)
+              			.css('margin',margin);
+	            //	}); 
+            	$container.isotope( 'insert', $items );
+            
+        		  });
+          
+          
+    			counter++;
+    			//if (counter > 6) break;
+    		}
+    		
+    		$("#Loading").html("");
+  			 $('#container').isotope({ itemSelector : '.outerwrap',
+        			masonryHorizontal: {columnWidth: 200, gutterWidth: 0}
+   					   });
+    	}
+    	/*
+    var containers = [];	
+    $("#container").on("ready",".outerwrap", function() {
+      containers.push($(this));
+      containers.push($(this).siblings())
+      alert(containers.length)
+    });
+    
+    var $containers = $( containers.join('') );
+    $containers.each(function(){ 
+    	$(this).css("height", $(this).height()).css("width", $(this).width());
+    });
+   
+	$('#container').isotope( 'insert', $containers ); */
+    </script>
+      
+          
+    
+  </div>
 
- <div class="modal fade" id="alert-modal">
-    <div class="modal-header">
-	<h3 id="alert-title">Alert Title</h3>
-    </div>
-    <div class="modal-body">
-	<p id="alert-text">Alert text</p>
-    </div>
-    <div class="modal-footer">
-	<button class="btn btn-large" data-dismiss="modal">Okay</button>
-    </div>
-</div>
+  <div id="sites"></div>
+  
+  
+  <script>
+    $(function(){
+    
+    var last_active;
+      
+    $("#container").on({"mouseenter": function(){
 
+     	$(this).find('.fadecont').fadeTo("fast",.2);
+      	$(this).find('.input').show().css('z-index',10); 
+  
+    }, "mouseleave": function() { $(this).find('.fadecont').fadeTo("fast",1);
+    	  	$(this).find('.input').hide().css('z-index',-5);}
+    }, ".outerwrap");
+    
+     $("#container").on({"click": function(){
+      deletes = $(this).parent().parent();
+      deletes.hide();
+      $("#container").isotope( 'remove', $(this).parent().parent())
+      if (cluster_names[parseInt($(this).parent().parent().attr("id").slice(10))])
+      	cluster_names.splice(parseInt($(this).parent().parent().attr("id").slice(10)),1);
+      console.log(cluster_names);
+      
+    }
+    }, "h3");
+    
+    $("#container").on({"click": function(){
+      var name = $(this).parent().find("input").val();
+      if (name == 'Edit Label') { alert ("Don't forget to edit the label!"); return; }
+      deletes = $(this).parents('.outerwrap');
+      deletes.removeClass('outerwrap');
+      deletes.find('.fadecont').fadeTo("fast",.2);
+      $(this).parent().css('width','100%').css('text-align', 'center');
+      $(this).parent().find("input").css('text-align', 'center').css('margin-top','20%').attr('disabled',true);
+      $(this).hide();
+      cluster_names[parseInt($(this).parent().parent().attr("id").slice(10))] = $(this).parent().find("input").val();
+      console.log(cluster_names);
+
+      var members = clusters[$(this).parent().parent().attr("id").slice(10)]["members"];
+      createFriendListNew(name, members);
+      
+    }
+    }, "h4");
+
+
+    
+    });
+  </script>
+
+   
+  </section> <!-- #content -->
+  
 {% endblock %}
