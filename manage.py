@@ -14,7 +14,6 @@ FACEBOOK_APP_SECRET = '766f8133b12b913103707875fa2078b6'
 if port == 5000:
 	FACEBOOK_APP_ID = '498464373503828'
 	FACEBOOK_APP_SECRET = 'f4e24d77158bd708f3b6fa0d671a5102'
-print "port is: " + str(port)
 
 # Turn on debugger by default and reloader
 manager.add_command("runserver", Server(
