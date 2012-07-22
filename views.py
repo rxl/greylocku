@@ -5,6 +5,7 @@ from models import *
 import json
 from flask import session, flash
 from flask import g
+from manage import FACEBOOK_APP_ID, FACEBOOK_APP_SECRET
 
 #------------------------
 # users
@@ -23,9 +24,6 @@ users.add_url_rule('/', view_func=HomeView.as_view('index'))
 #------------------------
 
 from flaskext.oauth import OAuth
-
-FACEBOOK_APP_ID = '498464373503828'
-FACEBOOK_APP_SECRET = 'f4e24d77158bd708f3b6fa0d671a5102'
 
 oauth = OAuth()
 facebook = oauth.remote_app('facebook',

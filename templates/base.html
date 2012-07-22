@@ -45,7 +45,6 @@ top:100px; z-index:10;">
                 {% block navbar_right %}
                 <ul class="nav pull-right" style="list-style: none;">
                   {% if not session.logged_in %}
-                    <li><a href="{{ url_for('users.login') }}" style="color: white;">Login or Signup</a></li>
                   {% else %}
                     <li><a href="{{ url_for('users.logout') }}" style="color: white;">Logout</a></li>
                   {% endif %}
