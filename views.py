@@ -82,3 +82,19 @@ users.add_url_rule('/logout', view_func=LogoutView.as_view('logout'))
 users.add_url_rule('/facebook-authorized', view_func=FacebookAuthorizedView.as_view('facebook-authorized'))
 
 
+<<<<<<< HEAD
+=======
+
+#------------------------
+# api
+#------------------------
+
+class FacebookApiRequests(MethodView):
+       def get(self, string):
+              data = facebook.get("/" + string).data
+              print data
+
+              return json.dumps(data)
+
+users.add_url_rule('/api/<string>/', view_func = FacebookApiRequests.as_view('api'))
+>>>>>>> cc503fcf5fb90a9e68b789d40135c0569d36b320
