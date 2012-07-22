@@ -5,7 +5,6 @@ from models import *
 import json
 from flask import session, flash
 from flask import g
-from manage import FACEBOOK_APP_ID, FACEBOOK_APP_SECRET
 
 #------------------------
 # users
@@ -25,6 +24,9 @@ users.add_url_rule('/', view_func=HomeView.as_view('index'))
 
 from flaskext.oauth import OAuth
 
+FACEBOOK_APP_ID = '340867512667352'
+FACEBOOK_APP_SECRET = 'd595097b376fb5fba5ea3ea3d8a72ddf'
+
 oauth = OAuth()
 facebook = oauth.remote_app('facebook',
 	base_url='https://graph.facebook.com/',
@@ -33,7 +35,7 @@ facebook = oauth.remote_app('facebook',
 	authorize_url='https://www.facebook.com/dialog/oauth',
 	consumer_key=FACEBOOK_APP_ID,
 	consumer_secret=FACEBOOK_APP_SECRET,
-	request_token_params={'scope': ('email', 'manage_friendlists', 'read_friendlists')}
+	request_token_params={'scope': ('manage_friendlists')}
 )
 
 @facebook.tokengetter
