@@ -176,9 +176,9 @@ class GenerateFriendListView(MethodView):
 							resp = facebook.post(friendlist_id + "/members/" + member['i'])
 						response = { "success" : True, "friendlist_id": friendlist_id, "cluster_id": cluster_id }
 					except:
-						response = { "success" : False, "error" : "members of friendlist not found" }
+						response = { "success" : False, "error" : "members of friendlist not found", "cluster_id": cluster_id  }
 				except:
-					response = { "success" : False, "error" : "friendlist could not be created" } 
+					response = { "success" : False, "error" : "friendlist could not be created", "cluster_id": cluster_id } 
 			except:
 				response = { "success" : False, "error" : "friendlist name not found" }
 		except:

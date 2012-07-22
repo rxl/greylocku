@@ -69,11 +69,11 @@ function graphMuseError(jqXHR, exception) {
 }
 
 function setLoadingStatus() {
-    $("#loading-message").show();
+    //$("#loading-message").show();
 }
 
 function clearLoadingStatus() {
-    $("#loading-message").fadeOut(1000);
+    //$("#loading-message").fadeOut(1000);
 }
 
 function loadClusters() {
@@ -133,7 +133,9 @@ function onCreatedFriendList(data) {
     window.open('https://www.facebook.com/lists/' + list_id);
 }
 
-function createFriendListError(jqXHR, exception) {
+function createFriendListError(data) {
+    id = data['cluster_id'];
+    clearSavingFriendList(id);
     displayError("Could not create friend list");
 }
 

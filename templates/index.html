@@ -28,11 +28,12 @@ body{overflow: hidden;height: 100%;}
 .container, .page, .content {height: 100%;}
 a.login{background-color: #F6BB21; padding: 1.5% 2.5%; color: white; 
 font-family: 'Helvetica Neue', Arial, sans-serif;font-weight: bold;
-font-size: 30px; border: 3px solid #FF8B00;}
+font-size: 30px; border: 3px solid #FF8B00; vertical-align: top;}
 </style>
   <div class=header>FRIENDMUSE
   <div class=soustitre>Friend lists made easy.</div>
-  <span><a class=login href="{{ url_for('users.facebook-login') }}">Login with Facebook</a></span>
+  <span><a class=login href="{{ url_for('users.facebook-login') }}">Login with Facebook</a></span> 
+  <img src="{{ url_for('static', filename='img/preview.png') }}" style='position: relative; left: 200px; top: -25px; width: ; float: center;'>
 </div>
 
   <div class='stripe1 tops'></div>
@@ -41,6 +42,10 @@ font-size: 30px; border: 3px solid #FF8B00;}
   <div class='stripe1 bot'></div>
   <div class='stripe2 mid'></div>
   <div class='stripe3 top'></div>
+
+   <script>
+      localStorage.removeItem('clusters');
+    </script>
 {% else %}
 
   <div class=header>FRIENDMUSE</div>
