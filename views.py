@@ -70,7 +70,7 @@ class FacebookAuthorizedView(MethodView):
 
 		session['logged_in'] = True
 		session['facebook_token'] = (resp['access_token'], '')
-
+		
 		me = facebook.get('/me')
 		session['facebook_id'] = me.data['id']
 

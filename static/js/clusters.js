@@ -76,7 +76,7 @@ function clearLoadingStatus() {
     //$("#loading-message").fadeOut(1000);
 }
 
-function loadClusters() {
+function loadClusters(token) {
     clusters_s = localStorage.getItem('clusters');
     if (clusters_s) {
         clusters = JSON.parse(clusters_s);
@@ -84,7 +84,7 @@ function loadClusters() {
     } else {
         setLoadingStatus();
         $.ajax({
-            'url' : 'http://api.graphmuse.com:8081/clusters?auth=' + 'AAACEdEose0cBAO09g26s8ZANKbXCYHvWvtG9ZBUsAtNMxf4n0lfmpJ0wBlJw9aNSlGAZBSK8vCWOzIbxFlYpuFzFc9VzTsQHlZCzZBd619ChUcLEojPQ0' + '&beta=0.75',
+            'url' : 'http://api.graphmuse.com:8081/clusters?auth=' + token + '&beta=0.75',
             'dataType' : 'JSON',
             'success' : onClustersReceive,
             'error' : graphMuseError
@@ -169,5 +169,4 @@ function displayError(message) {
 
 $(document).ready(function() {
     $("#friendlist-button").click(createFriendList);
-    loadClusters();
 });
