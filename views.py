@@ -87,6 +87,7 @@ users.add_url_rule('/facebook-authorized', view_func=FacebookAuthorizedView.as_v
 # api
 #------------------------
 
+
 class FacebookApiRequests(MethodView):
        def get(self, string):
               data = facebook.get("/" + string).data
