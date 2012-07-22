@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    
+   
+    <link href="{{ url_for('static', filename='css/isotope-style.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/graphmuse.css') }}" rel="stylesheet">
     <style> body { padding-top: 60px; } </style>
@@ -75,6 +76,7 @@
 
     </div>
     {% block js_footer %}
+      <script src="{{ url_for('static', filename='js/jquery.isotope.min.js') }}"></script>
       <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
       <script src="{{ url_for('static', filename='js/jquery.validate.js') }}"></script>
       <script src="{{ url_for('static', filename='js/jquery.validation.functions.js') }}"></script>

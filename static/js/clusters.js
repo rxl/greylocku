@@ -1,16 +1,29 @@
+/**
+ *  Displaying clusters 
+ */
+
+function fetchInterests() {
+    interests = new Array();
+    var id = current_cluster_id;
+    for (var j=0; j<clusters[id].members.length; j++) {
+        $.ajax({
+	    'url' : '',
+	    'dataType' : 'JSON',
+	    'success' : updateInterests,
+	    'error' : null
+	});
+    }
+}
+
 function viewCluster(e) {
     // FIXME: super hacky...
     var id = parseInt(e.srcElement.id.split('-')[2]) - 1;
+    current_cluster_id = id;
     for (var j=0; j<clusters[id].members.length; j++) {
         $.tmpl(cluster_member_template, {'i': clusters[id].members[j].i, 'name': clusters[id].members[j].name}).appendTo("#list-of-friends");
     }
     $("#viewcluster-title").html(clusters[id].members.length + ' friends in cluster');
     $("#viewcluster-modal").modal({keyboard : false, backdrop : 'static', show: true});
-}
-
-function cacheClusters(clusters) {
-    clusters_s = JSON.stringify(clusters);
-    localStorage.setItem('clusters', clusters_s);
 }
 
 function showClusters(clusters) {
@@ -32,6 +45,15 @@ function showClusters(clusters) {
 	    $.tmpl(cluster_member_template, {'i': clusters[i].members[j].i, 'name': clusters[i].members[j].name}).appendTo("#cluster_" + parseInt(i+1));
 	}
     }
+}
+
+/**
+ *  Loading and caching clusters
+ */
+
+function cacheClusters(clusters) {
+    clusters_s = JSON.stringify(clusters);
+    localStorage.setItem('clusters', clusters_s);
 }
 
 function onClustersReceive(data) {
@@ -86,8 +108,48 @@ function loadClusters() {
     }
 }
 
+/**
+ *  Friend list creation 
+ */
+
+
+function createFriendList() {
+    var id = current_cluster_id;
+    var name = $('#cluster-name').val();
+    var data = new Array();
+    data['name'] = name;
+    data['members'] = clusters[id].members;
+
+    $.ajax({
+        'type' : 'POST',
+        'url' : '/generatefriendlist/',
+	'dataType' : 'JSON',
+	'data' : data,
+	'success' : onCreatedFriendList,
+	'error' : createFriendListError
+    });
+}
+
+function onCreatedFriendList(data) {
+}
+
+function createFriendListError(jqXHR, exception) {
+    displayError("Could not create friend list");
+}
+
+/**
+ *  Misc
+ */
+
+function displayError(message) {
+    alert("Error: " + message);
+}
+
+/**
+ *  Main
+ */
+
 $(document).ready(function() {
-
+    $("#friendlist-button").click(createFriendList);
     loadClusters();
-
 });
