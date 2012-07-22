@@ -152,6 +152,34 @@ class CreateFriendLists(MethodView):
 
 		return { "success" : True }
 
+class GenerateFriendListView(MethodView):
+	def post(self):
+		response = { "success" : False }
+		data = None
+
+		try:
+			data = request.data
+			try:
+				friendlist_name = data['name']
+				resp = facebook.post('/friendlists?name=' + friendlist_name)
+				try:
+					friendlist_id = resp.data['id']
+					try:
+						member_ids = data['members']
+						for user_id in member_ids:
+							resp = facebook.post(friendlist_id + "/members/" + user_id)
+						response = { "success" : True, "friendlist_id": friendlist_id }
+					except:
+						response = { "success" : False, "error" : "members of friendlist not found" }
+				except:
+					response = { "success" : False, "error" : "friendlist could not be created" } 
+			except:
+				response = { "success" : False, "error" : "friendlist name not found" }
+		except:
+			response = { "success" : False, "error" : "could not load request data" }
+
+		return response
+
 class GetClustersView(MethodView):
 	def get(self, access_token):
 		#print access_token
@@ -176,4 +204,4 @@ class FacebookApiRequests(MethodView):
 users.add_url_rule('/api/<string>/', view_func = FacebookApiRequests.as_view('api'))
 users.add_url_rule('/getclusters/<access_token>/', view_func = GetClustersView.as_view('getclusters'))
 users.add_url_rule('/createfriendlists/', view_func = CreateFriendLists.as_view('createfriendlists'))
-
+users.add_url_rule('/generatefriendlist/', view_func = GenerateFriendListView.as_view('generatefriendlist'))
