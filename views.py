@@ -3,6 +3,8 @@ from flask.views import MethodView
 from models import *
 #from flask.ext.mongoengine.wtf import model_form
 import json
+from flask import session, flash
+from flask import g
 
 #------------------------
 # users
@@ -21,7 +23,6 @@ users.add_url_rule('/', view_func=HomeView.as_view('index'))
 #------------------------
 
 from flaskext.oauth import OAuth
-from flask import session, flash
 
 FACEBOOK_APP_ID = '498464373503828'
 FACEBOOK_APP_SECRET = 'f4e24d77158bd708f3b6fa0d671a5102'
@@ -34,7 +35,7 @@ facebook = oauth.remote_app('facebook',
 	authorize_url='https://www.facebook.com/dialog/oauth',
 	consumer_key=FACEBOOK_APP_ID,
 	consumer_secret=FACEBOOK_APP_SECRET,
-	request_token_params={'scope': ('email', 'manage_friendlists')}
+	request_token_params={'scope': ('email', 'manage_friendlists', 'read_friendlists')}
 )
 
 @facebook.tokengetter
@@ -73,7 +74,8 @@ class FacebookAuthorizedView(MethodView):
 		session['facebook_token'] = (resp['access_token'], '')
 
 		me = facebook.get('/me')
-		print me.data
+		session['facebook_id'] = me.data['id']
+
 		return redirect(next_url)
 
 users.add_url_rule('/login', view_func=LoginView.as_view('login'))
@@ -82,17 +84,96 @@ users.add_url_rule('/logout', view_func=LogoutView.as_view('logout'))
 users.add_url_rule('/facebook-authorized', view_func=FacebookAuthorizedView.as_view('facebook-authorized'))
 
 
-
 #------------------------
 # api
 #------------------------
 
+import requests
+#import urllib
+
+def get_friend_ids_from_cluster(cluster):
+	friend_ids = []
+	for friend in cluster['members']:
+		friend_ids.append(friend['i'])
+	return friend_ids
+
+class CreateFriendLists(MethodView):
+	def get(self):
+		momchil_cluster_names = {1: 'Facebook Interns', 2: 'Princeton Entrepreneurship Club', 3: 'High School Friends', 4: 'Bulgarians in Computer Science', 7: 'Fraternity', 8: 'Stanford e-Bootcamp', 10: 'Bulgarians at Princeton', 17: 'MemSQL Team', 20: 'My Family'}
+		cluster_names = momchil_cluster_names
+
+		cluster_response = None
+		try:
+			with open('data/' + session['facebook_id'] + '.json', 'r') as f:
+				json_data = f.read()
+				cluster_response = json.loads(json_data)
+		except:
+			print "could not open file"
+
+		#headers = {'content-type': 'application/json'}
+		#resp = requests.post('http://localhost:5000/createfriendlists/', data=json.dumps(cluster_names), headers=headers)
+		#print resp.text
+
+		return render_template('users/create_lists.html', cluster_names=json.dumps(cluster_names), cluster_response=json.dumps(cluster_response))
+
+	def post(self):
+		cluster_names = None
+		try:
+			cluster_names = json.loads(request.form['cluster_names'])
+		except:
+			print "could not load cluster names"
+			return { "success" : False, "error" : "could not load cluster names" }
+
+		my_cluster_response = None		
+		try:
+			my_cluster_response = json.loads(request.form['cluster_response'])
+		except:
+			print "could not load cluster response"
+			return { "success" : False, "error" : "could not load cluster response" }
+
+
+		clusters = my_cluster_response['clusters']
+		for key in cluster_names:
+			try:
+				cluster = clusters[int(key)]
+				resp = facebook.post('/friendlists?name=' + str(cluster_names[key]).replace(' ', "%20"))
+				try:
+					friendlist_id = resp.data['id']
+					friend_ids_in_cluster = get_friend_ids_from_cluster(cluster)
+					for user_id in friend_ids_in_cluster:
+						resp = facebook.post(friendlist_id + "/members/" + user_id)
+					print "created group: %s" % str(cluster_names[key])
+				except:
+					print "failed to create group: %s" % str(cluster_names[key])
+					return { "success" : False, "error" : "failed to create group: %s" % str(cluster_names[key]) }
+			except:
+				print "invalid key for cluster names"
+				return { "success" : False, "error" : "invalid key for cluster names" }
+
+		return { "success" : True }
+
+class GetClustersView(MethodView):
+	def get(self, access_token):
+		#print access_token
+		url = 'http://api.graphmuse.com:8081/clusters?auth=' + access_token
+		r = requests.get(url)
+		
+		#print r.json
+		"""try:
+			with open('data/' + session['facebook_id'] + '.json', 'w') as f:
+				json_data = json.dumps(r.json)
+				f.write(json_data)
+		except:
+			print "could not write to file"""
+
+		return { "success" : True }
 
 class FacebookApiRequests(MethodView):
-       def get(self, string):
-              data = facebook.get("/" + string).data
-              print data
-
-              return json.dumps(data)
+	def get(self, string):
+		data = facebook.get("/" + string).data
+		return json.dumps(data)
 
 users.add_url_rule('/api/<string>/', view_func = FacebookApiRequests.as_view('api'))
+users.add_url_rule('/getclusters/<access_token>/', view_func = GetClustersView.as_view('getclusters'))
+users.add_url_rule('/createfriendlists/', view_func = CreateFriendLists.as_view('createfriendlists'))
+

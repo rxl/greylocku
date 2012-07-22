@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<form name="create_lists" action="{{ url_for('users.createfriendlists') }}" method="post">
+		<input type="hidden" name="cluster_names" value="{{ cluster_names }}" />
+		<input type="hidden" name="cluster_response" value="{{ cluster_response }}" />
+		<input type="submit" class="btn" value="Create Friend Lists" />
+	</form>
+{% endblock %}
