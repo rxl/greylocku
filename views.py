@@ -161,6 +161,7 @@ class GenerateFriendListView(MethodView):
 			print data
 			try:
 				friendlist_name = data.getlist('name')[0]
+				cluster_id = data.getlist('cluster_id')[0]
 				print friendlist_name
 				friendlist_name = str(friendlist_name).replace(' ', '%20')
 				print friendlist_name
@@ -175,7 +176,7 @@ class GenerateFriendListView(MethodView):
 						for member in members:
 						        print member
 							resp = facebook.post(friendlist_id + "/members/" + member['i'])
-						response = { "success" : True, "friendlist_id": friendlist_id }
+						response = { "success" : True, "friendlist_id": friendlist_id, "cluster_id": cluster_id }
 					except:
 						response = { "success" : False, "error" : "members of friendlist not found" }
 				except:

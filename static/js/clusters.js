@@ -96,7 +96,7 @@ function loadClusters() {
     clusters_s = localStorage.getItem('clusters');
     if (clusters_s) {
         clusters = JSON.parse(clusters_s);
-	showClusters(clusters);
+	    showClusters(clusters);
     } else {
         setLoadingStatus();
         $.ajax({
@@ -120,6 +120,7 @@ function createFriendList() {
     data['name'] = name;
     data['members'] = clusters[id].members;
 
+    setSavingFriendList(id);
     $.ajax({
         'type' : 'POST',
         'url' : '/generatefriendlist/',
@@ -133,8 +134,18 @@ function createFriendList() {
     });
 }
 
+function setSavingFriendList(id) {
+    $("#loading-message-" + id).show();
+}
+
+function clearSavingFriendList(id) {
+    $('#loading-message-' + id).fadeOut(1000);
+}
+
 function onCreatedFriendList(data) {
     list_id = data['friendlist_id'];
+    id = data['cluster_id'];
+    clearSavingFriendList(id);
     window.open('https://www.facebook.com/lists/' + list_id);
 }
 
@@ -142,14 +153,16 @@ function createFriendListError(jqXHR, exception) {
     displayError("Could not create friend list");
 }
 
-function createFriendListNew(name, members) {
+function createFriendListNew(name, members, id) {
+    setSavingFriendList(id);
     $.ajax({
         'type' : 'POST',
         'url' : '/generatefriendlist/',
         'dataType' : 'JSON',
         'data' : {
             'name' : name,
-            'members' : JSON.stringify(members)
+            'members' : JSON.stringify(members),
+            'cluster_id' : id
         },
         'success' : onCreatedFriendList,
         'error' : createFriendListError
