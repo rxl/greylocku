@@ -3,7 +3,7 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 #app.config["MONGODB_DB"] = "greylocku"
-#app.config["SECRET_KEY"] = "KeepThisS3cr3t"
+app.config["SECRET_KEY"] = "c0d3s0hard"
 
 #db = MongoEngine(app)
 
