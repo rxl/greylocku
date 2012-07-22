@@ -45,3 +45,15 @@ ul.fourcol {
             column-count:4;
 }
 
+#viewcluster-modal{
+   width:940px;
+   margin-left:-470px;
+   height: 700px;
+   margin-top:-350px;
+   margin-bottom:-350px;
+}
+
+ul
+{
+    list-style-type: none;
+}

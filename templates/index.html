@@ -6,4 +6,29 @@
 	{% else %}
 		<p>You're logged in!</p>
 	{% endif %}
+
+<div class="alert alert-info notification" id="loading-message" style="display:none"> 
+    <img src="/static/img/ajax-loader.gif"></img>&nbsp; &nbsp; <span class="message">Loading Clusters...</span>
+</div>
+
+<div id="clusterDiv">
+</div>
+
+<p class="button"><a class="btn btn-large" id="viewcluster-button">Expand Cluster</a></p>
+
+<div class="modal fade" id="viewcluster-modal">
+    <div class="modal-header">
+	<button class="close" data-dismiss="modal">×</button>
+	<h3 id="viewcluster-title">Cluster</h3>
+    </div>
+    <div class="modal-body">
+        <p align="center">Cluster label: <input type="text" name="label" /></p>
+	<p class="button" align="center"><a class="btn btn-large" id="friendlist-button">Create Friend List</a> </p>
+	<br /><br />
+	<div id="friend-list">
+            <p><ul class="list-of-friends" id="list-of-friends"></ul></p>
+	</div>
+    </div>
+</div>
+
 {% endblock %}
