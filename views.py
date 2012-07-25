@@ -24,8 +24,8 @@ users.add_url_rule('/', view_func=HomeView.as_view('index'))
 
 from flaskext.oauth import OAuth
 
-FACEBOOK_APP_ID = '340867512667352'
-FACEBOOK_APP_SECRET = 'd595097b376fb5fba5ea3ea3d8a72ddf'
+FACEBOOK_APP_ID = '498464373503828'
+FACEBOOK_APP_SECRET = 'a773d0cf967eedb6d6aeebd23fa72c23'
 
 oauth = OAuth()
 facebook = oauth.remote_app('facebook',
@@ -35,7 +35,7 @@ facebook = oauth.remote_app('facebook',
 	authorize_url='https://www.facebook.com/dialog/oauth',
 	consumer_key=FACEBOOK_APP_ID,
 	consumer_secret=FACEBOOK_APP_SECRET,
-	request_token_params={'scope': ('manage_friendlists')}
+	request_token_params={'scope': ('email, read_friendlists, manage_friendlists')}
 )
 
 @facebook.tokengetter
@@ -137,11 +137,17 @@ class CreateFriendLists(MethodView):
 			try:
 				cluster = clusters[int(key)]
 				resp = facebook.post('/friendlists?name=' + str(cluster_names[key]).replace(' ', "%20"))
+				print resp
 				try:
 					friendlist_id = resp.data['id']
+					print "data response: "
+					print resp.data
+					print "friendlist id: "
+					print friendlist_id
 					friend_ids_in_cluster = get_friend_ids_from_cluster(cluster)
 					for user_id in friend_ids_in_cluster:
 						resp = facebook.post(friendlist_id + "/members/" + user_id)
+						print "response:" + str(resp)
 					print "created group: %s" % str(cluster_names[key])
 				except:
 					print "failed to create group: %s" % str(cluster_names[key])
@@ -158,24 +164,32 @@ class GenerateFriendListView(MethodView):
 		data = None
 		try:
 			data = request.form
-			print data
+			#print data
 			try:
 				friendlist_name = data.getlist('name')[0]
 				cluster_id = data.getlist('cluster_id')[0]
-				print friendlist_name
+				#print friendlist_name
 				friendlist_name = str(friendlist_name).replace(' ', '%20')
-				print friendlist_name
-				resp = facebook.post('/friendlists?name=' + friendlist_name)
-				print friendlist_name
-				print resp.data
+				#print friendlist_name
+				resp = facebook.post('/me/friendlists/', data={'name': friendlist_name })
+				#print friendlist_name
+				#print "response data"
+				#print resp.data
 				try:
 					friendlist_id = resp.data['id']
+					#print "friendlist_id"
+					#print friendlist_id
 					try:
 						members = json.loads(data.getlist('members')[0])
-						print members
+						#print members
 						for member in members:
-						        print member
-							resp = facebook.post(friendlist_id + "/members/" + member['i'])
+							#print "member id"
+							#print member['i']
+							post_dest = "/" + friendlist_id + "/members/" + member['i']
+							#print post_dest
+							resp = facebook.post(post_dest)
+							#print "response"
+							#print resp.data
 						response = { "success" : True, "friendlist_id": friendlist_id, "cluster_id": cluster_id }
 					except:
 						response = { "success" : False, "error" : "members of friendlist not found", "cluster_id": cluster_id  }
@@ -192,7 +206,7 @@ class GenerateFriendListView(MethodView):
 class GetClustersView(MethodView):
 	def get(self, access_token):
 		#print access_token
-		url = 'http://api.graphmuse.com:8081/clusters?auth=' + access_token
+		url = 'https://api.graphmuse.com:8081/clusters?auth=' + access_token
 		r = requests.get(url)
 		
 		#print r.json

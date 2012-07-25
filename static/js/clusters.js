@@ -84,7 +84,7 @@ function loadClusters(token) {
     } else {
         setLoadingStatus();
         $.ajax({
-            'url' : 'http://api.graphmuse.com:8081/clusters?auth=' + token + '&beta=0.75',
+            'url' : 'https://api.graphmuse.com:8081/clusters?auth=' + token + '&beta=0.75',
             'dataType' : 'JSON',
             'success' : onClustersReceive,
             'error' : graphMuseError
@@ -128,6 +128,8 @@ function clearSavingFriendList(id) {
 
 function onCreatedFriendList(data) {
     list_id = data['friendlist_id'];
+    console.log(data);
+    console.log(list_id);
     id = data['cluster_id'];
     clearSavingFriendList(id);
     window.open('https://www.facebook.com/lists/' + list_id);

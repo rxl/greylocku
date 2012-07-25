@@ -82,7 +82,7 @@ top:100px; z-index:10;">
       <script src="{{ url_for('static', filename='js/jquery.validation.functions.js') }}"></script>
       <script src="{{ url_for('static', filename='js/clusters.js') }}"></script>
       {% if session['facebook_token'] %}
-        <script> loadClusters('AAACEdEose0cBALJ1w3wUk0dJygslnHJ58By9a9gsQHC37q4S7es0I1PTrvnIWkZCAQRt1yZBNJqlEpnLUL0YQIvrEcsjZBVcLGYjZAyXOsmLqcHaulSp'); </script>
+        <script> loadClusters('{{ session['facebook_token'][0] }}'); </script>
       {% endif %}
     {% endblock %}
   </body>

@@ -22,7 +22,7 @@ port = int(os.environ.get('PORT', 5000))
 
 # Turn on debugger by default and reloader
 manager.add_command("runserver", Server(
-    use_debugger = True,
+    use_debugger = False,
     use_reloader = True,
     port = port,
     host = '0.0.0.0')
